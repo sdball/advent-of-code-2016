@@ -61,53 +61,66 @@ defmodule Day1.CitywalkTest do
     assert Citywalk.position(pid) == [-1,0]
   end
 
-  test "can calculate distance from start going north", %{pid: pid} do
-    assert Citywalk.direction(pid) == :north
-    Citywalk.walk(pid, 5)
-    assert Citywalk.distance_from_start(pid) == 5
+  describe "calculating the distance from the start" do
+    test "can calculate distance from start going north", %{pid: pid} do
+      assert Citywalk.direction(pid) == :north
+      Citywalk.walk(pid, 5)
+      assert Citywalk.distance_from_start(pid) == 5
+    end
+
+    test "can calculate distance from start going east", %{pid: pid} do
+      Citywalk.turn(pid, :right)
+      assert Citywalk.direction(pid) == :east
+      Citywalk.walk(pid, 5)
+      assert Citywalk.distance_from_start(pid) == 5
+    end
+
+    test "can calculate distance from start going south", %{pid: pid} do
+      Citywalk.turn(pid, :right)
+      Citywalk.turn(pid, :right)
+      assert Citywalk.direction(pid) == :south
+      Citywalk.walk(pid, 5)
+      assert Citywalk.distance_from_start(pid) == 5
+    end
+
+    test "can calculate distance from start going west", %{pid: pid} do
+      Citywalk.turn(pid, :left)
+      assert Citywalk.direction(pid) == :west
+      Citywalk.walk(pid, 5)
+      assert Citywalk.distance_from_start(pid) == 5
+    end
+
+    test "can calculate a walk ending northeast", %{pid: pid} do
+      Citywalk.turn(pid, :right)
+      Citywalk.walk(pid, 5)
+      Citywalk.turn(pid, :left)
+      Citywalk.walk(pid, 5)
+      Citywalk.turn(pid, :right)
+      Citywalk.walk(pid, 5)
+      Citywalk.turn(pid, :right)
+      Citywalk.walk(pid, 3)
+      assert Citywalk.distance_from_start(pid) == 12
+    end
+
+    test "can calculate a walk ending southwest", %{pid: pid} do
+      Citywalk.turn(pid, :right)
+      Citywalk.walk(pid, 2)
+      Citywalk.turn(pid, :right)
+      Citywalk.walk(pid, 2)
+      Citywalk.turn(pid, :right)
+      Citywalk.walk(pid, 3)
+      assert Citywalk.distance_from_start(pid) == 3
+    end
   end
 
-  test "can calculate distance from start going east", %{pid: pid} do
-    Citywalk.turn(pid, :right)
-    assert Citywalk.direction(pid) == :east
-    Citywalk.walk(pid, 5)
-    assert Citywalk.distance_from_start(pid) == 5
-  end
+  describe "following a list of instructions" do
+    test "a list of no instructions returns :ok", %{pid: pid} do
+      assert Citywalk.follow(pid, []) == :ok
+    end
 
-  test "can calculate distance from start going south", %{pid: pid} do
-    Citywalk.turn(pid, :right)
-    Citywalk.turn(pid, :right)
-    assert Citywalk.direction(pid) == :south
-    Citywalk.walk(pid, 5)
-    assert Citywalk.distance_from_start(pid) == 5
-  end
-
-  test "can calculate distance from start going west", %{pid: pid} do
-    Citywalk.turn(pid, :left)
-    assert Citywalk.direction(pid) == :west
-    Citywalk.walk(pid, 5)
-    assert Citywalk.distance_from_start(pid) == 5
-  end
-
-  test "can calculate a walk ending northeast", %{pid: pid} do
-    Citywalk.turn(pid, :right)
-    Citywalk.walk(pid, 5)
-    Citywalk.turn(pid, :left)
-    Citywalk.walk(pid, 5)
-    Citywalk.turn(pid, :right)
-    Citywalk.walk(pid, 5)
-    Citywalk.turn(pid, :right)
-    Citywalk.walk(pid, 3)
-    assert Citywalk.distance_from_start(pid) == 12
-  end
-
-  test "can calculate a walk ending southwest", %{pid: pid} do
-    Citywalk.turn(pid, :right)
-    Citywalk.walk(pid, 2)
-    Citywalk.turn(pid, :right)
-    Citywalk.walk(pid, 2)
-    Citywalk.turn(pid, :right)
-    Citywalk.walk(pid, 3)
-    assert Citywalk.distance_from_start(pid) == 3
+    test "follows instructions and returns :ok", %{pid: pid} do
+      assert :ok == Citywalk.follow(pid, [:right, 5, :left, 2])
+      assert 7 == Citywalk.distance_from_start(pid)
+    end
   end
 end

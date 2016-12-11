@@ -15,12 +15,12 @@ defmodule Day1.Citywalk do
     GenServer.call(pid, :position)
   end
 
-  def distance_from_start(pid) do
-    GenServer.call(pid, :distance_from_start)
-  end
-
   def direction(pid) do
     GenServer.call(pid, :direction)
+  end
+
+  def distance_from_start(pid) do
+    GenServer.call(pid, :distance_from_start)
   end
 
   # -- commands
