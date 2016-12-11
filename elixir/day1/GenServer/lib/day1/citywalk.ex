@@ -9,6 +9,8 @@ defmodule Day1.Citywalk do
     GenServer.start_link(__MODULE__, [])
   end
 
+  # -- status
+
   def position(pid) do
     GenServer.call(pid, :position)
   end
@@ -21,6 +23,22 @@ defmodule Day1.Citywalk do
     GenServer.call(pid, :direction)
   end
 
+  # -- commands
+
+  def follow(pid, []) do
+    {:ok, distance_from_start(pid)}
+  end
+
+  def follow(pid, [left_or_right | remaining]) when is_atom left_or_right do
+    turn(pid, left_or_right)
+    follow(pid, remaining)
+  end
+
+  def follow(pid, [blocks | remaining]) do
+    walk(pid, blocks)
+    follow(pid, remaining)
+  end
+
   def turn(pid, direction) do
     GenServer.call(pid, {:turn, direction})
   end
@@ -28,6 +46,8 @@ defmodule Day1.Citywalk do
   def walk(pid, blocks) do
     GenServer.call(pid, {:walk, blocks})
   end
+
+  # -- GenServer callbacks
 
   def init([]) do
     {:ok, %State{}}
@@ -38,7 +58,7 @@ defmodule Day1.Citywalk do
   end
 
   def handle_call(:distance_from_start, _from, %{x: x, y: y} = state) do
-    {:reply, abs(x + y), state}
+    {:reply, abs(x) + abs(y), state}
   end
 
   def handle_call(:direction, _from, %{direction: direction} = state) do
