@@ -25,8 +25,8 @@ defmodule Day1.Citywalk do
 
   # -- commands
 
-  def follow(pid, []) do
-    {:ok, distance_from_start(pid)}
+  def follow(_pid, []) do
+    :ok
   end
 
   def follow(pid, [left_or_right | remaining]) when is_atom left_or_right do

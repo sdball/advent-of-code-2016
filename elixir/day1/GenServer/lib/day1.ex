@@ -1,12 +1,13 @@
 defmodule Day1 do
-  def count_blocks(file) do
+  def count_blocks do
     {:ok, pid} = Day1.Citywalk.start_link
-    {:ok, distance} = Day1.Citywalk.follow(pid, instructions)
+    :ok = Day1.Citywalk.follow(pid, instructions)
+    distance = Day1.Citywalk.distance_from_start(pid)
     IO.puts "After following all instructions we're #{distance} blocks from the start."
   end
 
-  def first_intersection(file) do
-    IO.inspect File.read!(file)
+  def first_intersection do
+    instructions
   end
 
   defp instructions do
