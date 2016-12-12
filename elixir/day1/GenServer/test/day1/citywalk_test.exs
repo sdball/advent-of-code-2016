@@ -123,4 +123,16 @@ defmodule Day1.CitywalkTest do
       assert 7 == Citywalk.distance_from_start(pid)
     end
   end
+
+  test "tracks visited points", %{pid: pid} do
+    assert Citywalk.follow(pid, [:right, 5]) == :ok
+    assert Citywalk.visited_points(pid) == [
+      [0,0],
+      [1,0],
+      [2,0],
+      [3,0],
+      [4,0],
+      [5,0],
+    ]
+  end
 end
