@@ -124,15 +124,58 @@ defmodule Day1.CitywalkTest do
     end
   end
 
-  test "tracks visited points", %{pid: pid} do
-    assert Citywalk.follow(pid, [:right, 5]) == :ok
-    assert Citywalk.visited_points(pid) == [
-      [0,0],
-      [1,0],
-      [2,0],
-      [3,0],
-      [4,0],
-      [5,0],
-    ]
+  describe "tracking points visited" do
+    test "individual commands track points", %{pid: pid} do
+      Citywalk.turn(pid, :right)
+      assert Citywalk.visited_points(pid) == [[0,0]]
+
+      Citywalk.walk(pid, 1)
+      assert Citywalk.visited_points(pid) == [[0,0], [1,0]]
+
+      Citywalk.turn(pid, :left)
+      assert Citywalk.visited_points(pid) == [[0,0], [1,0]]
+
+      Citywalk.walk(pid, 1)
+      assert Citywalk.visited_points(pid) == [[0,0], [1,0], [1,1]]
+    end
+
+    test "following a list of instructions tracks visited points", %{pid: pid} do
+      assert Citywalk.follow(pid, [:right, 5]) == :ok
+      assert Citywalk.visited_points(pid) == [
+        [0,0],
+        [1,0],
+        [2,0],
+        [3,0],
+        [4,0],
+        [5,0],
+      ]
+    end
+
+    test "complex instructions tracks visited points correctly", %{pid: pid} do
+      assert Citywalk.follow(pid, [:right, 2, :right, 2, :right, 2, :right, 2])
+      assert Citywalk.visited_points(pid) == [
+        [0,0],
+        [1,0],
+        [2,0],
+        [2,-1],
+        [2,-2],
+        [1,-2],
+        [0,-2],
+        [0,-1],
+        [0,0],
+      ]
+    end
+  end
+
+  describe "finding first revisited point" do
+    test "finds first revisited point", %{pid: pid} do
+      assert Citywalk.follow(pid, [:right, 2, :right, 2, :right, 2, :right, 2])
+      assert Citywalk.find_first_revisit(pid) == [0,0]
+    end
+
+    test "if no revisited points then :none", %{pid: pid} do
+      assert Citywalk.follow(pid, [:right, 5])
+      assert Citywalk.find_first_revisit(pid) == :none
+    end
   end
 end
